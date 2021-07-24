@@ -10,6 +10,8 @@ const path = require("path");
 
 const accountPath = path.join(homedir, ".accounts.json");
 const newAccountCommand = "@addNewAccount";
+const removeAccountCommand = "@removeAccount";
+const backToHomeCommand = "@backToHome";
 
 const askOutputType = async () => {
   console.clear();
@@ -83,6 +85,7 @@ const saveAccount = (account) => {
 const getAccountsArray = () => {
   const accountsJson = fs.readFileSync(accountPath);
   const accountArray = JSON.parse(accountsJson);
+
   const choices = accountArray.map((account) => {
     const choice = {
       title: account.alias,
@@ -122,6 +125,37 @@ const askAmount = async () => {
   return await prompts(amountQuestion);
 };
 
+const removeAccount = async () => {
+  console.clear();
+  const accountsJson = fs.readFileSync(accountPath);
+  const accountArray = JSON.parse(accountsJson);
+  const choices = getAccountsArray();
+
+  choices.push({
+    title: "back to home",
+    value: backToHomeCommand,
+  });
+
+  const accountQuestion = {
+    message: "Select account which will be deleted:",
+    type: "select",
+    name: "account",
+    choices: choices,
+    initial: 0,
+  };
+  const answer = await prompts(accountQuestion);
+
+  if (answer.account === backToHomeCommand) {
+    showAccountSelector();
+  } else {
+    const newAccountArray = accountArray.filter(
+      (account) => account.iban !== answer.account
+    );
+    fs.writeFileSync(accountPath, JSON.stringify(newAccountArray));
+    showAccountSelector();
+  }
+};
+
 const showAccountSelector = async () => {
   console.clear();
   if (fs.existsSync(accountPath)) {
@@ -132,10 +166,17 @@ const showAccountSelector = async () => {
       value: newAccountCommand,
     });
 
+    choices.push({
+      title: "remove account",
+      value: removeAccountCommand,
+    });
+
     const iban = await askAccount(choices);
 
     if (iban.iban === newAccountCommand) {
       createAccount();
+    } else if (iban.iban === removeAccountCommand) {
+      removeAccount();
     } else {
       const amount = await askAmount();
       const qrString = await generateQrString(amount.amount, iban.iban);
