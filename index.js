@@ -96,7 +96,7 @@ const openInBrowser = (rawQrData) => {
   open(url);
 };
 
-const askAccount = async () => {
+const askAccount = async (choices) => {
   const accountQuestion = {
     message: "Select your account.",
     type: "select",
@@ -107,7 +107,7 @@ const askAccount = async () => {
   return await prompts(accountQuestion);
 };
 
-const askAmount = async (amountQuestion) => {
+const askAmount = async () => {
   const amountQuestion = {
     type: "number",
     name: "amount",
@@ -127,7 +127,7 @@ const showAccountSelector = async () => {
       value: newAccountCommand,
     });
 
-    const iban = await askAccount();
+    const iban = await askAccount(choices);
 
     if (iban.iban === newAccountCommand) {
       createAccount();
