@@ -5,8 +5,9 @@ const { generate } = require("bysquare");
 const prompts = require("prompts");
 const fs = require("fs");
 const qrcode = require("qrcode-terminal");
+const homedir = require("os").homedir();
 
-const accountPath = "./accounts.json";
+const accountPath = `${homedir}/.accounts.json`;
 const newAccountCommand = "@addNewAccount";
 
 const askOutputType = async () => {
