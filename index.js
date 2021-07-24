@@ -11,7 +11,7 @@ const newAccountCommand = "@addNewAccount";
 
 const askOutputType = async () => {
   const answer = await prompts({
-    message: "Select your account.",
+    message: "Select type of output: ",
     type: "select",
     name: "output",
     choices: [
