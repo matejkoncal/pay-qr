@@ -10,6 +10,7 @@ const accountPath = "./accounts.json";
 const newAccountCommand = "@addNewAccount";
 
 const askOutputType = async () => {
+  console.clear();
   const answer = await prompts({
     message: "Select type of output: ",
     type: "select",
@@ -42,6 +43,7 @@ const generateQrString = async (amount, iban) => {
 };
 
 const createAccount = async () => {
+  console.clear();
   const answers = await prompts([
     {
       type: "text",
@@ -119,6 +121,7 @@ const askAmount = async () => {
 };
 
 const showAccountSelector = async () => {
+  console.clear();
   if (fs.existsSync(accountPath)) {
     const choices = getAccountsArray();
 
@@ -147,4 +150,3 @@ const showAccountSelector = async () => {
 };
 
 showAccountSelector();
-
