@@ -132,7 +132,7 @@ const removeAccount = async () => {
   const choices = getAccountsArray();
 
   choices.push({
-    title: "back to home",
+    title: "> back to home",
     value: backToHomeCommand,
   });
 
@@ -162,12 +162,12 @@ const showAccountSelector = async () => {
     const choices = getAccountsArray();
 
     choices.push({
-      title: "add new account",
+      title: "> add new account",
       value: newAccountCommand,
     });
 
     choices.push({
-      title: "remove account",
+      title: "> remove account",
       value: removeAccountCommand,
     });
 
