@@ -4,7 +4,7 @@ const open = require("open");
 const { generate } = require("bysquare");
 const prompts = require("prompts");
 const fs = require("fs");
-var qrcode = require("qrcode-terminal");
+const qrcode = require("qrcode-terminal");
 
 const accountPath = "./accounts.json";
 const newAccountCommand = "@addNewAccount";
@@ -96,6 +96,28 @@ const openInBrowser = (rawQrData) => {
   open(url);
 };
 
+const askAccount = async () => {
+  const accountQuestion = {
+    message: "Select your account.",
+    type: "select",
+    name: "iban",
+    choices: choices,
+    initial: 0,
+  };
+  return await prompts(accountQuestion);
+};
+
+const askAmount = async (amountQuestion) => {
+  const amountQuestion = {
+    type: "number",
+    name: "amount",
+    float: true,
+    round: 3,
+    message: "Amount?",
+  };
+  return await prompts(amountQuestion);
+};
+
 const showAccountSelector = async () => {
   if (fs.existsSync(accountPath)) {
     const choices = getAccountsArray();
@@ -105,27 +127,12 @@ const showAccountSelector = async () => {
       value: newAccountCommand,
     });
 
-    const accountQuestion = {
-      message: "Select your account.",
-      type: "select",
-      name: "iban",
-      choices: choices,
-      initial: 0,
-    };
-
-    const amountQuestion = {
-      type: "number",
-      name: "amount",
-      float: true,
-      round: 3,
-      message: "Amount?",
-    };
-    const iban = await prompts(accountQuestion);
+    const iban = await askAccount();
 
     if (iban.iban === newAccountCommand) {
       createAccount();
     } else {
-      const amount = await prompts(amountQuestion);
+      const amount = await askAmount();
       const qrString = await generateQrString(amount.amount, iban.iban);
       const outputType = await askOutputType();
       if (outputType === "terminal") {
@@ -138,4 +145,6 @@ const showAccountSelector = async () => {
     createAccount();
   }
 };
+
 showAccountSelector();
+
