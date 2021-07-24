@@ -6,8 +6,9 @@ const prompts = require("prompts");
 const fs = require("fs");
 const qrcode = require("qrcode-terminal");
 const homedir = require("os").homedir();
+const path = require("path");
 
-const accountPath = `${homedir}/.accounts.json`;
+const accountPath = path.join(homedir, ".accounts.json");
 const newAccountCommand = "@addNewAccount";
 
 const askOutputType = async () => {
