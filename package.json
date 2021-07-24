@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Matej Koncal",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matejkoncal/pay-qr"
+  },
   "bin": {
     "pay-qr": "./index.js"
   },
