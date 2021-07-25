@@ -1,6 +1,6 @@
 {
   "name": "pay-qr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI for generate qr codes (pay-by-square is standard used in Slovakia only).",
   "main": "index.js",
   "author": "Matej Koncal",
