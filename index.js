@@ -61,7 +61,7 @@ const createAccount = async () => {
     },
   ]);
   saveAccount(answers);
-  showAccountSelector();
+  initialize();
 };
 
 const saveAccount = (account) => {
@@ -146,50 +146,60 @@ const removeAccount = async () => {
   const answer = await prompts(accountQuestion);
 
   if (answer.account === backToHomeCommand) {
-    showAccountSelector();
+    initialize();
   } else {
     const newAccountArray = accountArray.filter(
       (account) => account.iban !== answer.account
     );
     fs.writeFileSync(accountPath, JSON.stringify(newAccountArray));
-    showAccountSelector();
+    initialize();
   }
 };
 
-const showAccountSelector = async () => {
+const addChoicesForControl = (choices) => {
+  choices.push({
+    title: "> add new account",
+    value: newAccountCommand,
+  });
+
+  choices.push({
+    title: "> remove account",
+    value: removeAccountCommand,
+  });
+};
+
+const showQr = (outputType, qrString) => {
+  if (outputType === "terminal") {
+    qrcode.generate(qrString, { small: true });
+  } else {
+    openInBrowser(qrString);
+  }
+};
+
+const resolveSelectedOption = async (iban) => {
+  if (iban.iban === newAccountCommand) {
+    createAccount();
+  } else if (iban.iban === removeAccountCommand) {
+    removeAccount();
+  } else {
+    const amount = await askAmount();
+    const qrString = await generateQrString(amount.amount, iban.iban);
+    const outputType = await askOutputType();
+    showQr(outputType, qrString);
+  }
+};
+
+const initialize = async () => {
   console.clear();
   if (fs.existsSync(accountPath)) {
     const choices = getAccountsArray();
-
-    choices.push({
-      title: "> add new account",
-      value: newAccountCommand,
-    });
-
-    choices.push({
-      title: "> remove account",
-      value: removeAccountCommand,
-    });
-
+    addChoicesForControl(choices);
     const iban = await askAccount(choices);
-
-    if (iban.iban === newAccountCommand) {
-      createAccount();
-    } else if (iban.iban === removeAccountCommand) {
-      removeAccount();
-    } else {
-      const amount = await askAmount();
-      const qrString = await generateQrString(amount.amount, iban.iban);
-      const outputType = await askOutputType();
-      if (outputType === "terminal") {
-        qrcode.generate(qrString, { small: true });
-      } else {
-        openInBrowser(qrString);
-      }
-    }
+    await resolveSelectedOption(iban);
   } else {
     createAccount();
   }
 };
 
-showAccountSelector();
+initialize();
+
